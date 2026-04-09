@@ -6,8 +6,8 @@ function fn() {
 
   var config = {
     env: env,
-    fleetBaseUrl: 'http://localhost:8081',
-    rulesBaseUrl: 'http://localhost:8093',
+    fleetBaseUrl: 'http://localhost:8082',
+    rulesBaseUrl: 'http://localhost:8083',
     // Seed data — vehicle type IDs from Flyway V2 migration
     sedanTypeId: 'c1a1d13e-b3df-4fab-9584-890b852d5311',
     suvTypeId: 'c1a1d13e-b3df-4fab-9584-890b852d5313',

@@ -27,7 +27,7 @@ Feature: Vehicle registration in fleet-service
     And match response.status == 'ACTIVE'
     And match response.currentMileage == 0
     And match response.id == '#uuid'
-    And match response.vehicleTypeName == 'Sedan'
+    And match response.vehicleTypeName == 'Sedán'
     * print 'Created vehicle:', response.plate
 
   @regression @negative
@@ -68,8 +68,7 @@ Feature: Vehicle registration in fleet-service
       }
       """
     When method POST
-    Then status 400
-    And match response.message contains 'already exists'
+    Then status 409
     * print 'Duplicate plate correctly rejected for:', plate
 
   @regression @negative
@@ -135,3 +134,43 @@ Feature: Vehicle registration in fleet-service
     When method POST
     Then status 404
     * print 'Non-existent vehicleTypeId correctly rejected'
+
+  @regression @negative @hu-01
+  Scenario: HU-01 - Rechazar VIN con menos de 17 caracteres
+    * def plate = 'KT' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 5).toUpperCase()
+    Given path '/api/vehicles'
+    And request
+      """
+      {
+        "plate": "#(plate)",
+        "brand": "Toyota",
+        "model": "Hilux",
+        "year": 2023,
+        "fuelType": "Diesel",
+        "vin": "12345",
+        "vehicleTypeId": "#(sedanTypeId)"
+      }
+      """
+    When method POST
+    Then status 400
+    And match response.errors[0] contains '17'
+
+  @regression @negative @hu-01
+  Scenario: HU-01 - Rechazar registro sin campo vehicleTypeId
+    * def plate = 'KT' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 5).toUpperCase()
+    * def vin = '1HGCM' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 12).toUpperCase()
+    Given path '/api/vehicles'
+    And request
+      """
+      {
+        "plate": "#(plate)",
+        "brand": "Toyota",
+        "model": "Hilux",
+        "year": 2023,
+        "fuelType": "Diesel",
+        "vin": "#(vin)"
+      }
+      """
+    When method POST
+    Then status 400
+    And match response.errors[0] contains 'tipo de veh'

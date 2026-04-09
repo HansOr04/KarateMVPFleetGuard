@@ -1,8 +1,8 @@
 Feature: Full integrated lifecycle flow - cross-service communication via RabbitMQ
 
   Background:
-    * def uniquePlate = 'FG' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 5)
-    * def uniqueVin = '1HGCM' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 12)
+    * def uniquePlate = 'FG' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 5).toUpperCase()
+    * def uniqueVin = '1HGCM' + java.util.UUID.randomUUID().toString().replace('-','').substring(0, 12).toUpperCase()
     * print 'Integration test starting with plate:', uniquePlate
 
   @smoke @integration @regression
@@ -83,6 +83,7 @@ Feature: Full integrated lifecycle flow - cross-service communication via Rabbit
         "description": "Cambio de aceite post-alerta",
         "cost": 175.50,
         "provider": "Taller QA",
+        "recordedBy": "Tecnico QA",
         "mileageAtService": 9500,
         "performedAt": "2026-04-02T14:00:00"
       }

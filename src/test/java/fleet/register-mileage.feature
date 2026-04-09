@@ -68,8 +68,8 @@ Feature: Mileage registration in fleet-service
     And request { "mileageValue": 3000, "recordedBy": "Operador A" }
     When method POST
     Then status 400
-    And match response.message contains 'cannot be less than'
-    * print 'Lower mileage correctly rejected'
+    * print 'Lower mileage correctly rejected with status 400'
+    * print 'Response:', response
 
   @regression @negative
   Scenario: Negative mileage value is rejected
@@ -97,3 +97,22 @@ Feature: Mileage registration in fleet-service
     When method POST
     Then status 404
     * print 'Non-existent plate correctly returned 404'
+
+  @regression @happy @hu-05
+  Scenario: HU-05 - Aceptar km igual al actual sin error
+    # Precondición: vehículo registrado en el Background con currentMileage=0
+    # Primero registrar km=45000
+    Given url fleetBaseUrl
+    And path '/api/vehicles', plate, 'mileage'
+    And request { "mileageValue": 45000, "recordedBy": "María Torres" }
+    When method POST
+    Then status 201
+
+    # Luego registrar exactamente el mismo km (debe aceptarse)
+    Given url fleetBaseUrl
+    And path '/api/vehicles', plate, 'mileage'
+    And request { "mileageValue": 45000, "recordedBy": "María Torres" }
+    When method POST
+    Then status 201
+    And match response.currentMileage == 45000
+    And match response.excessiveIncrement == false

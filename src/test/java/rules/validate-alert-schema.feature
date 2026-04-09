@@ -9,6 +9,7 @@ Feature: Alert schema validation helper
         "vehicleId": "#uuid",
         "vehicleTypeId": "#uuid",
         "ruleId": "#uuid",
+        "ruleName": "#string",
         "status": "#string",
         "dueAtKm": "#number",
         "triggeredAt": "##string",
